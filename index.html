@@ -573,4 +573,551 @@
         }
 
         .results.success h2 { color: #6b8e23; }
-        .results.failure h2 { color: #a07840
+        .results.failure h2 { color: #a07840; }
+
+        .results p {
+            font-size: 1.5rem;
+            color: #3a2a1a;
+            margin-bottom: 35px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #c9a96e, #a07840);
+            border: none;
+            border-radius: 30px;
+            padding: 18px 50px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(160, 120, 64, 0.3);
+            margin: 12px;
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(160, 120, 64, 0.4);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            top: -10px;
+            animation: confettiFall linear forwards;
+            z-index: 9999;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.5rem; }
+            .elements-grid { grid-template-columns: 1fr; }
+            .modal-content { margin: 20px; padding: 30px; }
+            .test-container { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Эпоха барокко</h1>
+            <div class="subtitle">Барокко в Италии · Путешествие в мир музыки XVII–XVIII веков</div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-label">Прогресс изучения: <span id="progress-text">0/6</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="elements-grid" id="elements-grid"></div>
+
+        <div class="test-btn-container">
+            <button class="test-btn" id="test-btn" disabled>Пройти тест</button>
+        </div>
+
+        <div class="test-container" id="test-container"></div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <div class="timer" id="timer" style="display: none;">Время: <span id="timer-value">00:00</span></div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modal-content"></div>
+    </div>
+
+    <script>
+        const elements = [
+            {
+                id: 1,
+                title: "Что такое «Барокко»?",
+                shortDesc: "Происхождение и черты стиля",
+                content: {
+                    definition: "В переводе с португальского «perola barocca» означает «жемчужина причудливой формы». Термин «барокко» применяют к искусству периода с конца XVI до середины XVIII века. Для этого стиля характерны три главные черты.",
+                    examples: [
+                        "Первая черта — большое количество изысканных деталей и украшений. Барокко перегружено орнаментами, как богато украшенная шкатулка",
+                        "Вторая черта — масштабность и парадность. В эту эпоху строятся Версаль во Франции и Петергоф в России, создаются грандиозные живописные полотна",
+                        "Третья черта — внимание к личности человека со всем его богатым, противоречивым внутренним миром. Сервантес пишет «Дон Кихота», работают художники Рубенс, Рембрандт, Ван Дейк, Веласкес"
+                    ],
+                    painting: {
+                        title: "Замок Линдерхоф в Баварии",
+                        author: "Построен в XIX веке в стиле барокко",
+                        description: "Замок Линдерхоф в Баварии был построен в XIX веке, но в соответствии со всеми стилистическими нормами и правилами архитектуры эпохи барокко. Он демонстрирует парадность и изысканность барочного стиля.",
+                        url: "painting4.jpg"
+                    },
+                    quote: {
+                        text: "Открылась бездна звёзд полна;<br>Звёздам числа нет, бездне дна.",
+                        author: "М.В. Ломоносов"
+                    },
+                    info: "Конечно, церковь была ещё сильна, но она уже не безраздельно владела умами: мир оказался неизмеримо сложнее религиозных сказок. Этот вызов Непостижимого прекрасно выразил ведущий русский учёный того времени М.В. Ломоносов своими стихами о бесконечности вселенной.",
+                    errors: [
+                        "Ошибка: думать, что барокко — это просто «старинный стиль». Это конкретная эпоха (конец XVI — середина XVIII века)",
+                        "Ошибка: считать барокко «неправильным» искусством. Название произошло от слова «бракованная жемчужина», но стиль был очень продуманным",
+                        "Ошибка: путать барокко с классицизмом. Барокко — это экспрессия и украшения, классицизм — порядок и ясность"
+                    ]
+                }
+            },
+            {
+                id: 2,
+                title: "Рождение оперы",
+                shortDesc: "Флоренция, Пери, Каччини, Монтеверди",
+                content: {
+                    definition: "Опера — уникальный вид искусства, в котором объединились музыка, сценическое действие, поэзия, танец и живопись. Она была предназначена для исполнения перед большим количеством слушателей, что привело к строительству оперных театров по всей Европе.",
+                    examples: [
+                        "Первая опера «Дафна» (1598) — сочинена Якопо Пери на слова Оттавио Ринуччини во Флоренции. К сожалению, партитура не сохранилась",
+                        "Следующей стала «Эвридика» (1600) — написана теми же авторами. В том же году появилась ещё одна «Эвридика» композитора Джулио Каччини",
+                        "Клаудио Монтеверди (1567–1643) — один из первых композиторов, в чьём творчестве опера занимает постоянное место. Его первая опера — «Орфей» (1608). Жизнь связана с Мантуей и Венецией"
+                    ],
+                    info: "Важно понять: опера стала одним из двух важнейших явлений эпохи барокко (второе — развитие инструментальной музыки). Именно опера определила лицо музыкальной культуры барокко.",
+                    errors: [
+                        "Ошибка: думать, что опера существовала всегда. Она родилась именно в эпоху барокко, во Флоренции",
+                        "Ошибка: считать, что «Эвридика» — только одна опера. Их было две в 1600 году — Пери и Каччини",
+                        "Ошибка: путать Монтеверди с более поздними композиторами (Вивальди, Скарлатти). Монтеверди жил раньше"
+                    ]
+                }
+            },
+            {
+                id: 3,
+                title: "Живопись эпохи барокко",
+                shortDesc: "Рембрандт и другие мастера",
+                content: {
+                    definition: "Живопись барокко характеризуется драматизмом, эмоциональностью, контрастами света и тени (кьяроскуро). Художники обращались как к религиозным, так и к светским сюжетам, изображая их с особой человечностью и теплотой.",
+                    examples: [
+                        "Рембрандт ван Рейн — великий голландский мастер барокко. Его картина «Святое семейство» (1645) изображает Деву Марию, Иосифа и младенца Иисуса в уютной домашней обстановке с ангелами",
+                        "Другие великие художники барокко: Рубенс (Фландрия), Ван Дейк (Англия), Веласкес (Испания) — каждый со своим уникальным стилем",
+                        "Для барочной живописи характерны: динамичные композиции, эмоциональная насыщенность, внимание к внутреннему миру человека"
+                    ],
+                    painting: {
+                        title: "Святое семейство",
+                        author: "Рембрандт ван Рейн, 1645",
+                        description: "Картина изображает Святое семейство в интимной домашней обстановке. Над Марией, Иосифом и младенцем Иисусом парят ангелы в лучах божественного света. Характерный для Рембрандта приём светотени создаёт тёплую, уютную атмосферу.",
+                        url: "painting5.jpg"
+                    },
+                    errors: [
+                        "Ошибка: думать, что Рембрандт писал только портреты. Он создавал и религиозные, и исторические полотна",
+                        "Ошибка: считать, что барочная живопись — это только пышность и украшения. Рембрандт показал, что барокко может быть интимным и человечным",
+                        "Ошибка: путать барокко с Возрождением. Барочная живопись более драматична и эмоциональна"
+                    ]
+                }
+            },
+            {
+                id: 4,
+                title: "Язык музыки барокко",
+                shortDesc: "Украшения и секвенции",
+                content: {
+                    definition: "Музыка барокко имеет два главных «знака»: музыкальные украшения (мелизмы) и диатоническая секвенция. Они делают музыку узнаваемой и характерной для эпохи.",
+                    examples: [
+                        "Знак 1: Музыкальные украшения — трель, группетто, мордент. Их даже не записывали нотами, а обозначали специальными знаками. Они делают музыку похожей на богато украшенную шкатулку",
+                        "Пример украшений: медленная часть Сонаты №12 В.А. Моцарта, где в самом начале идут три группетто подряд — это стилизация барочной музыки",
+                        "Знак 2: Диатоническая секвенция из септаккордов кварто-квинтового соотношения. Звучит напряжённо и красочно. Пример: «Прелюдия и аллегро в стиле Пуньяни» Фрица Крейслера"
+                    ],
+                    errors: [
+                        "Ошибка: думать, что украшения в музыке — это что-то второстепенное. В барокко они были неотъемлемой частью",
+                        "Ошибка: путать трель, группетто и мордент. Это разные виды украшений",
+                        "Ошибка: считать секвенцию простым повтором. Это повтор мелодии на разной высоте, создающий напряжение"
+                    ]
+                }
+            },
+            {
+                id: 5,
+                title: "Антонио Вивальди (1678–1741)",
+                shortDesc: "«Рыжий поп» из Венеции",
+                content: {
+                    definition: "Антонио Вивальди — композитор, скрипач-виртуоз и преподаватель венецианской консерватории. Современники называли его «рыжим попом» из-за цвета волос и сана католического священника.",
+                    examples: [
+                        "Консерваториями тогда назывались приюты для сирот, где мальчиков обучали торговле, а девочек — музыке. Для оркестра своих учениц Вивальди написал большинство произведений",
+                        "Творческое наследие: 90 опер, 517 концертов, больше 100 сонат, оратории, светские и духовные кантаты",
+                        "Самое известное сочинение — цикл «Четыре времени года». В части «Лето» скрипка с оркестром изображает бурю: порывы ветра, сверкание молний, раскаты грома, потоки ливня"
+                    ],
+                    painting: {
+                        title: "Портрет Антонио Вивальди",
+                        author: "Гравюра эпохи барокко",
+                        description: "Портрет Антонио Вивальди — великого итальянского композитора и скрипача. На портрете он изображён в характерном для эпохи барокко парике с локонами, держит ноты и перо для записи музыки.",
+                        url: "painting6.jpg"
+                    },
+                    info: "Трагический финал: несмотря на популярность при жизни, Вивальди умер на чужбине, в нищете, и был похоронен на венском кладбище для бедняков. Через 50 лет та же судьба постигла Моцарта.",
+                    errors: [
+                        "Ошибка: думать, что Вивальди писал только «Времена года». Он создал более 500 концертов!",
+                        "Ошибка: считать «Времена года» абстрактной музыкой. Это программная музыка со звукоподражанием",
+                        "Ошибка: путать Вивальди с другими композиторами барокко. Он был именно скрипачом и преподавателем консерватории"
+                    ]
+                }
+            },
+            {
+                id: 6,
+                title: "Доменико Скарлатти (1685–1757)",
+                shortDesc: "Мастер клавесинной сонаты",
+                content: {
+                    definition: "Доменико Скарлатти — сын композитора Алессандро Скарлатти, композитор, органист и клавесинист. Родился в один год с И.С. Бахом и Г.Ф. Генделем.",
+                    examples: [
+                        "Соревновался в виртуозном мастерстве с Генделем при дворе римского кардинала. Был признан лучшим клавесинистом, но Гендель опередил его в органном мастерстве. Это не привело к ссоре — Скарлатти остался почитателем Генделя",
+                        "Написал 555 клавесинных сонат — в основном небольшие, одночастные, несложные по содержанию",
+                        "В его сонатах содержится множество открытий в области фортепианной техники и фактуры, многие из которых предвещают классицизм"
+                    ],
+                    painting: {
+                        title: "Портрет Доменико Скарлатти",
+                        author: "Портрет эпохи барокко",
+                        description: "Портрет Доменико Скарлатти — великого итальянского композитора и клавесиниста. На портрете он изображён в характерном парике эпохи барокко, держит ноты, что символизирует его композиторскую деятельность.",
+                        url: "painting7.jpg"
+                    },
+                    errors: [
+                        "Ошибка: путать Доменико Скарлатти с его отцом Алессандро. Доменико превзошёл отца",
+                        "Ошибка: думать, что 555 сонат — это много для одного композитора. Для Скарлатти это было нормой",
+                        "Ошибка: считать сонаты Скарлатти примитивными. Они просты по содержанию, но новаторски по технике"
+                    ]
+                }
+            }
+        ];
+
+        const testQuestions = [
+            {
+                question: "Слово «барокко» произошло от португальского «perola barocca», что означает ________.",
+                answers: ["жемчужину причудливой формы", "идеально круглую жемчужину", "крупную и дорогую жемчужину"],
+                correct: 0,
+                hint: "Это слово означало нечто несовершенное, неправильной формы"
+            },
+            {
+                question: "Первая опера «Дафна» (1598) была сочинена ________ во Флоренции.",
+                answers: ["Клаудио Монтеверди", "Якопо Пери", "Джулио Каччини"],
+                correct: 1,
+                hint: "Этот композитор был членом флорентийской «камераты»"
+            },
+            {
+                question: "Картина «Святое семейство» (1645) принадлежит кисти ________.",
+                answers: ["Рубенса", "Веласкеса", "Рембрандта"],
+                correct: 2,
+                hint: "Это голландский мастер, известный приёмом светотени"
+            },
+            {
+                question: "Музыкальные украшения барокко — это трель, группетто и ________.",
+                answers: ["мордент", "соната", "фуга"],
+                correct: 0,
+                hint: "Это один из видов мелизмов, начинающийся с основной ноты"
+            },
+            {
+                question: "Вивальди преподавал в венецианской консерватории, которая была ________.",
+                answers: ["университетом для музыкантов", "приютом для сирот", "церковной школой"],
+                correct: 1,
+                hint: "Там обучали девочек-сирот музыке"
+            },
+            {
+                question: "Доменико Скарлатти написал ________ клавесинных сонат.",
+                answers: ["55", "5555", "555"],
+                correct: 2,
+                hint: "Это очень большое число — больше пятисот"
+            }
+        ];
+
+        let visitedElements = new Set();
+        let timerInterval;
+        let seconds = 0;
+
+        function init() {
+            renderElements();
+            updateProgress();
+        }
+
+        function renderElements() {
+            const grid = document.getElementById('elements-grid');
+            grid.innerHTML = '';
+            
+            elements.forEach(el => {
+                const btn = document.createElement('div');
+                btn.className = 'element-btn';
+                btn.id = `element-${el.id}`;
+                btn.innerHTML = `
+                    <h3>${el.title}</h3>
+                    <p>${el.shortDesc}</p>
+                `;
+                btn.onclick = () => openCard(el);
+                grid.appendChild(btn);
+            });
+        }
+
+        function openCard(element) {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modal-content');
+            
+            let infoHtml = '';
+            if (element.content.info) {
+                infoHtml = `
+                    <h3>Важно понять</h3>
+                    <div class="info-box">${element.content.info}</div>
+                `;
+            }
+
+            let quoteHtml = '';
+            if (element.content.quote) {
+                quoteHtml = `
+                    <div class="quote-box">
+                        <div class="quote-text">${element.content.quote.text}</div>
+                        <div class="quote-author">— ${element.content.quote.author}</div>
+                    </div>
+                `;
+            }
+
+            let paintingHtml = '';
+            if (element.content.painting) {
+                const p = element.content.painting;
+                paintingHtml = `
+                    <div class="painting-frame">
+                        <div class="painting-inner">
+                            <img class="painting-img" src="${p.url}" alt="${p.title}" 
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="painting-fallback" style="display:none;">
+                                <div class="painting-fallback-title">${p.title}</div>
+                                <div class="painting-fallback-author">${p.author}</div>
+                                <div class="painting-fallback-desc">${p.description}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="painting-caption">${p.title} — ${p.author}</div>
+                `;
+            }
+            
+            content.innerHTML = `
+                <h2>${element.title}</h2>
+                ${paintingHtml}
+                <h3>Что это такое?</h3>
+                <p>${element.content.definition}</p>
+                
+                <h3>Примеры</h3>
+                ${element.content.examples.map(ex => `
+                    <div class="example-box">${ex}</div>
+                `).join('')}
+                
+                ${quoteHtml}
+                ${infoHtml}
+                
+                <h3>Типичные ошибки</h3>
+                ${element.content.errors.map(err => `
+                    <div class="error-box">${err}</div>
+                `).join('')}
+                
+                <button class="close-btn" onclick="closeCard(${element.id})">Понял!</button>
+            `;
+            
+            modal.style.display = 'block';
+            visitedElements.add(element.id);
+            document.getElementById(`element-${element.id}`).classList.add('visited');
+            updateProgress();
+        }
+
+        function closeCard(elementId) {
+            document.getElementById('modal').style.display = 'none';
+            checkTestAvailability();
+        }
+
+        function updateProgress() {
+            const progress = visitedElements.size;
+            const total = elements.length;
+            document.getElementById('progress-text').textContent = `${progress}/${total}`;
+            document.getElementById('progress-fill').style.width = `${(progress / total) * 100}%`;
+        }
+
+        function checkTestAvailability() {
+            const testBtn = document.getElementById('test-btn');
+            if (visitedElements.size === elements.length) {
+                testBtn.disabled = false;
+            }
+        }
+
+        document.getElementById('test-btn').onclick = function() {
+            document.getElementById('elements-grid').style.display = 'none';
+            document.querySelector('.test-btn-container').style.display = 'none';
+            document.querySelector('.progress-container').style.display = 'none';
+            document.getElementById('test-container').style.display = 'block';
+            document.getElementById('timer').style.display = 'block';
+            
+            startTimer();
+            renderTest();
+        };
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                document.getElementById('timer-value').textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function renderTest() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '<h2 style="font-family: Playfair Display; color: #5c3a21; margin-bottom: 35px; text-align: center; font-size: 2.4rem; border-bottom: 3px solid #c9a96e; padding-bottom: 15px; font-style: italic;">Тест по эпохе барокко</h2>';
+            
+            testQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">
+                        <strong>Вопрос ${index + 1}:</strong> ${q.question}
+                    </div>
+                    <div class="answers">
+                        ${q.answers.map((ans, ansIndex) => `
+                            <div class="answer-option" onclick="selectAnswer(${index}, ${ansIndex})">
+                                ${ans}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="hint-btn" onclick="showHint(${index})">Подсказка</button>
+                    <div class="hint-text" id="hint-${index}">${q.hint}</div>
+                `;
+                container.appendChild(questionDiv);
+            });
+            
+            const submitBtn = document.createElement('button');
+            submitBtn.className = 'submit-test-btn';
+            submitBtn.textContent = 'Проверить ответы';
+            submitBtn.onclick = checkAnswers;
+            container.appendChild(submitBtn);
+        }
+
+        function selectAnswer(questionIndex, answerIndex) {
+            const question = document.querySelectorAll('.question')[questionIndex];
+            const options = question.querySelectorAll('.answer-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[answerIndex].classList.add('selected');
+            options[answerIndex].dataset.selected = 'true';
+        }
+
+        function showHint(index) {
+            document.getElementById(`hint-${index}`).style.display = 'block';
+        }
+
+        function checkAnswers() {
+            clearInterval(timerInterval);
+            let correct = 0;
+            const total = testQuestions.length;
+            
+            testQuestions.forEach((q, index) => {
+                const question = document.querySelectorAll('.question')[index];
+                const options = question.querySelectorAll('.answer-option');
+                let selected = -1;
+                
+                options.forEach((opt, optIndex) => {
+                    if (opt.dataset.selected === 'true') {
+                        selected = optIndex;
+                    }
+                    opt.onclick = null;
+                });
+                
+                if (selected === q.correct) {
+                    correct++;
+                    options[selected].classList.add('correct');
+                } else {
+                    if (selected !== -1) {
+                        options[selected].classList.add('incorrect');
+                    }
+                    options[q.correct].classList.add('correct');
+                }
+            });
+            
+            setTimeout(() => showResults(correct, total), 1500);
+        }
+
+        function showResults(correct, total) {
+            document.getElementById('test-container').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+            
+            if (correct === total) {
+                results.className = 'results success';
+                results.innerHTML = `
+                    <h2>Отлично!</h2>
+                    <p>Ты настоящий знаток эпохи барокко!</p>
+                    <p>Правильных ответов: ${correct} из ${total}</p>
+                    <button class="restart-btn" onclick="restart()">Вернуться к карточкам</button>
+                `;
+                createConfetti();
+            } else {
+                results.className = 'results failure';
+                results.innerHTML = `
+                    <h2>Почти получилось!</h2>
+                    <p>Перечитай карточки и попробуй снова!</p>
+                    <p>Правильных ответов: ${correct} из ${total}</p>
+                    <button class="restart-btn" onclick="restart()">Вернуться к карточкам</button>
+                    <button class="restart-btn" onclick="retakeTest()">Пройти тест снова</button>
+                `;
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#c9a96e', '#a07840', '#6b8e23', '#cd853f', '#8b7355'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 30);
+            }
+        }
+
+        function restart() {
+            visitedElements.clear();
+            seconds = 0;
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('elements-grid').style.display = 'grid';
+            document.querySelector('.test-btn-container').style.display = 'block';
+            document.querySelector('.progress-container').style.display = 'block';
+            document.getElementById('test-btn').disabled = true;
+            renderElements();
+            updateProgress();
+        }
+
+        function retakeTest() {
+            seconds = 0;
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('test-container').style.display = 'block';
+            document.getElementById('timer').style.display = 'block';
+            startTimer();
+            renderTest();
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
