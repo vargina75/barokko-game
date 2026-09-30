@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Эпоха барокко | Обучающая игра</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'EB Garamond', serif;
+            background: linear-gradient(135deg, #faf6f0 0%, #f0ebe0 100%);
+            color: #3a2a1a;
+            overflow-x: hidden;
+            min-height: 100vh;
+            font-size: 19px;
+            line-height: 1.7;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #fff9f0 0%, #f5edd6 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(139, 90, 43, 0.15);
+            border: 3px solid #c9a96e;
+            position: relative;
+        }
+
+        .header::before,
+        .header::after {
+            content: '';
+            position: absolute;
+            font-size: 2rem;
+            color: #c9a96e;
+            opacity: 0.6;
+        }
+
+        .header::before { top: 15px; left: 30px; }
+        .header::after { bottom: 15px; right: 30px; }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.8rem;
+            font-weight: 700;
+            color: #5c3a21;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            font-style: italic;
+        }
+
+        .header .subtitle {
+            font-size: 1.6rem;
+            color: #8b6f47;
+            font-style: italic;
+            letter-spacing: 1px;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .progress-container {
+            background: linear-gradient(135deg, #fff9f0 0%, #f5edd6 100%);
+            border: 3px solid #c9a96e;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(139, 90, 43, 0.1);
+        }
+
+        .progress-label {
+            font-family: 'Cormorant Garamond', serif;
+            color: #5c3a21;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #e8dcc8;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #c9a96e;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c9a96e, #b8956a, #a07840);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(201, 169, 110, 0.5);
+        }
+
+        .elements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .element-btn {
+            background: linear-gradient(135deg, #fff9f0 0%, #f5edd6 100%);
+            border: 3px solid #c9a96e;
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(139, 90, 43, 0.15);
+        }
+
+        .element-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 90, 43, 0.25);
+            border-color: #a07840;
+        }
+
+        .element-btn.visited {
+            border-color: #6b8e23;
+            box-shadow: 0 5px 20px rgba(107, 142, 35, 0.2);
+        }
+
+        .element-btn.visited::after {
+            content: '✓';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #6b8e23;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .element-btn h3 {
+            font-family: 'Playfair Display', serif;
+            color: #5c3a21;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        .element-btn p {
+            color: #6b5a4a;
+            font-size: 1.15rem;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .test-btn-container {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .test-btn {
+            background: linear-gradient(135deg, #c9a96e, #a07840);
+            border: none;
+            border-radius: 50px;
+            padding: 25px 70px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(160, 120, 64, 0.3);
+            letter-spacing: 2px;
+            font-style: italic;
+        }
+
+        .test-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(160, 120, 64, 0.4);
+        }
+
+        .test-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(58, 42, 26, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #fff9f0 0%, #f5edd6 100%);
+            border: 4px solid #c9a96e;
+            border-radius: 20px;
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 50px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(139, 90, 43, 0.3);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content h2 {
+            font-family: 'Playfair Display', serif;
+            color: #5c3a21;
+            font-size: 2.4rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            border-bottom: 3px solid #c9a96e;
+            padding-bottom: 15px;
+            font-style: italic;
+        }
+
+        .modal-content h3 {
+            font-family: 'Cormorant Garamond', serif;
+            color: #8b6f47;
+            font-size: 1.5rem;
+            margin: 25px 0 15px 0;
+            font-weight: 700;
+        }
+
+        .modal-content p, .modal-content li {
+            color: #3a2a1a;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .modal-content ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content li {
+            color: #4a3a2a;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: rgba(201, 169, 110, 0.15);
+            border-left: 5px solid #c9a96e;
+            padding: 18px;
+            margin: 18px 0;
+            border-radius: 8px;
+        }
+
+        .error-box {
+            background: rgba(205, 92, 92, 0.1);
+            border-left: 5px solid #cd5c5c;
+            padding: 18px;
+            margin: 18px 0;
+            border-radius: 8px;
+        }
+
+        .info-box {
+            background: rgba(107, 142, 35, 0.1);
+            border-left: 5px solid #6b8e23;
+            padding: 18px;
+            margin: 18px 0;
+            border-radius: 8px;
+        }
+
+        .painting-frame {
+            margin: 30px auto;
+            max-width: 700px;
+            background: linear-gradient(135deg, #d4a574, #b8860b, #8b6914, #d4a574);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 
+                0 0 0 4px #8b6914,
+                0 0 0 8px #d4a574,
+                0 0 0 12px #6b4e0a,
+                0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .painting-inner {
+            background: #2a1f14;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .painting-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 2px;
+            max-height: 500px;
+            object-fit: contain;
+        }
+
+        .painting-fallback {
+            width: 100%;
+            min-height: 350px;
+            background: linear-gradient(135deg, #4a3a2a 0%, #6b5a4a 50%, #4a3a2a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            text-align: center;
+            color: #f5edd6;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .painting-fallback::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 30% 40%, rgba(212, 165, 116, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, rgba(139, 90, 43, 0.2) 0%, transparent 50%);
+        }
+
+        .painting-fallback-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #f5edd6;
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+        }
+
+        .painting-fallback-author {
+            font-size: 1.2rem;
+            color: #d4a574;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .painting-fallback-desc {
+            font-size: 1.05rem;
+            color: #e8dcc8;
+            line-height: 1.6;
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+        }
+
+        .painting-caption {
+            text-align: center;
+            font-style: italic;
+            color: #6b5a4a;
+            margin-top: 15px;
+            font-size: 1.05rem;
+            padding: 10px;
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #6b8e23, #556b2f);
+            border: none;
+            border-radius: 30px;
+            padding: 18px 50px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(107, 142, 35, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(107, 142, 35, 0.4);
+        }
+
+        .test-container {
+            display: none;
+            background: linear-gradient(135deg, #fff9f0 0%, #f5edd6 100%);
+            border: 4px solid #c9a96e;
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 950px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(139, 90, 43, 0.2);
+        }
+
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #fff9f0, #f0e6d3);
+            border: 3px solid #c9a96e;
+            border-radius: 15px;
+            padding: 18px 30px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: #5c3a21;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(139, 90, 43, 0.2);
+            font-weight: 600;
+        }
+
+        .question {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: rgba(255, 249, 240, 0.8);
+            border-radius: 12px;
+            border: 2px solid #c9a96e;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: #3a2a1a;
+            margin-bottom: 18px;
+            line-height: 1.8;
+            font-weight: 600;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer-option {
+            background: rgba(255, 249, 240, 0.9);
+            border: 2px solid #c9a96e;
+            border-radius: 10px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #3a2a1a;
+            font-size: 1.2rem;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .answer-option:hover {
+            background: rgba(201, 169, 110, 0.2);
+            transform: translateX(8px);
+        }
+
+        .answer-option.selected {
+            background: rgba(160, 120, 64, 0.2);
+            border-color: #a07840;
+        }
+
+        .answer-option.correct {
+            background: rgba(107, 142, 35, 0.2);
+            border-color: #6b8e23;
+        }
+
+        .answer-option.incorrect {
+            background: rgba(205, 92, 92, 0.2);
+            border-color: #cd5c5c;
+        }
+
+        .hint-btn {
+            background: rgba(201, 169, 110, 0.3);
+            border: 2px solid #c9a96e;
+            border-radius: 25px;
+            padding: 10px 25px;
+            color: #5c3a21;
+            cursor: pointer;
+            font-size: 1.05rem;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .hint-btn:hover {
+            background: rgba(201, 169, 110, 0.5);
+        }
+
+        .hint-text {
+            display: none;
+            color: #6b5a4a;
+            font-style: italic;
+            margin-top: 12px;
+            padding: 15px;
+            background: rgba(201, 169, 110, 0.15);
+            border-radius: 8px;
+        }
+
+        .submit-test-btn {
+            background: linear-gradient(135deg, #6b8e23, #556b2f);
+            border: none;
+            border-radius: 30px;
+            padding: 20px 60px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(107, 142, 35, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .submit-test-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(107, 142, 35, 0.4);
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(135deg, #fff9f0 0%, #f5edd6 100%);
+            border: 4px solid #c9a96e;
+            border-radius: 20px;
+            max-width: 750px;
+            margin: 50px auto;
+            box-shadow: 0 20px 60px rgba(139, 90, 43, 0.2);
+        }
+
+        .results h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        .results.success h2 { color: #6b8e23; }
+        .results.failure h2 { color: #a07840; }
+
+        .results p {
+            font-size: 1.5rem;
+            color: #3a2a1a;
+            margin-bottom: 35px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #c9a96e, #a07840);
+            border: none;
+            border-radius: 30px;
+            padding: 18px 50px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(160, 120, 64, 0.3);
+            margin: 12px;
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(160, 120, 64, 0.4);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            top: -10px;
+            animation: confettiFall linear forwards;
+            z-index: 9999;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.5rem; }
+            .elements-grid { grid-template-columns: 1fr; }
+            .modal-content { margin: 20px; padding: 30px; }
+            .test-container { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Эпоха барокко</h1>
+            <div class="subtitle">Барокко в Италии · Путешествие в мир музыки XVII–XVIII веков</div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-label">Прогресс изучения: <span id="progress-text">0/6</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="elements-grid" id="elements-grid"></div>
+
+        <div class="test-btn-container">
+            <button class="test-btn" id="test-btn" disabled>Пройти тест</button>
+        </div>
+
+        <div class="test-container" id="test-container"></div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <div class="timer" id="timer" style="display: none;">Время: <span id="timer-value">00:00</span></div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modal-content"></div>
+    </div>
+
+    <script>
+        const elements = [
+            {
+                id: 1,
+                title: "Что такое «Барокко»?",
+                shortDesc: "Происхождение и черты стиля",
+                content: {
+                    definition: "В переводе с португальского «perola barocca» означает «жемчужина причудливой формы». Термин «барокко» применяют к искусству периода с конца XVI до середины XVIII века. Для этого стиля характерны три главные черты.",
+                    examples: [
+                        "Первая черта — большое количество изысканных деталей и украшений. Барокко перегружено орнаментами, как богато украшенная шкатулка",
+                        "Вторая черта — масштабность и парадность. В эту эпоху строятся Версаль во Франции и Петергоф в России, создаются грандиозные живописные полотна",
+                        "Третья черта — внимание к личности человека со всем его богатым, противоречивым внутренним миром. Сервантес пишет «Дон Кихота», работают художники Рубенс, Рембрандт, Ван Дейк, Веласкес"
+                    ],
+                    painting: {
+                        title: "Замок Линдерхоф в Баварии",
+                        author: "Построен в XIX веке в стиле барокко",
+                        description: "Замок Линдерхоф в Баварии был построен в XIX веке, но в соответствии со всеми стилистическими нормами и правилами архитектуры эпохи барокко. Он демонстрирует парадность и изысканность барочного стиля.",
+                        url: "painting4.jpg"
+                    },
+                    errors: [
+                        "Ошибка: думать, что барокко — это просто «старинный стиль». Это конкретная эпоха (конец XVI — середина XVIII века)",
+                        "Ошибка: считать барокко «неправильным» искусством. Название произошло от слова «бракованная жемчужина», но стиль был очень продуманным",
+                        "Ошибка: путать барокко с классицизмом. Барокко — это экспрессия и украшения, классицизм — порядок и ясность"
+                    ]
+                }
+            },
+            {
+                id: 2,
+                title: "Рождение оперы",
+                shortDesc: "Флоренция, Пери, Каччини, Монтеверди",
+                content: {
+                    definition: "Опера — уникальный вид искусства, в котором объединились музыка, сценическое действие, поэзия, танец и живопись. Она была предназначена для исполнения перед большим количеством слушателей, что привело к строительству оперных театров по всей Европе.",
+                    examples: [
+                        "Первая опера «Дафна» (1598) — сочинена Якопо Пери на слова Оттавио Ринуччини во Флоренции. К сожалению, партитура не сохранилась",
+                        "Следующей стала «Эвридика» (1600) — написана теми же авторами. В том же году появилась ещё одна «Эвридика» композитора Джулио Каччини",
+                        "Клаудио Монтеверди (1567–1643) — один из первых композиторов, в чьём творчестве опера занимает постоянное место. Его первая опера — «Орфей» (1608). Жизнь связана с Мантуей и Венецией"
+                    ],
+                    info: "Важно понять: опера стала одним из двух важнейших явлений эпохи барокко (второе — развитие инструментальной музыки). Именно опера определила лицо музыкальной культуры барокко.",
+                    errors: [
+                        "Ошибка: думать, что опера существовала всегда. Она родилась именно в эпоху барокко, во Флоренции",
+                        "Ошибка: считать, что «Эвридика» — только одна опера. Их было две в 1600 году — Пери и Каччини",
+                        "Ошибка: путать Монтеверди с более поздними композиторами (Вивальди, Скарлатти). Монтеверди жил раньше"
+                    ]
+                }
+            },
+            {
+                id: 3,
+                title: "Живопись эпохи барокко",
+                shortDesc: "Рембрандт и другие мастера",
+                content: {
+                    definition: "Живопись барокко характеризуется драматизмом, эмоциональностью, контрастами света и тени (кьяроскуро). Художники обращались как к религиозным, так и к светским сюжетам, изображая их с особой человечностью и теплотой.",
+                    examples: [
+                        "Рембрандт ван Рейн — великий голландский мастер барокко. Его картина «Святое семейство» (1645) изображает Деву Марию, Иосифа и младенца Иисуса в уютной домашней обстановке с ангелами",
+                        "Другие великие художники барокко: Рубенс (Фландрия), Ван Дейк (Англия), Веласкес (Испания) — каждый со своим уникальным стилем",
+                        "Для барочной живописи характерны: динамичные композиции, эмоциональная насыщенность, внимание к внутреннему миру человека"
+                    ],
+                    painting: {
+                        title: "Святое семейство",
+                        author: "Рембрандт ван Рейн, 1645",
+                        description: "Картина изображает Святое семейство в интимной домашней обстановке. Над Марией, Иосифом и младенцем Иисусом парят ангелы в лучах божественного света. Характерный для Рембрандта приём светотени создаёт тёплую, уютную атмосферу.",
+                        url: "painting5.jpg"
+                    },
+                    errors: [
+                        "Ошибка: думать, что Рембрандт писал только портреты. Он создавал и религиозные, и исторические полотна",
+                        "Ошибка: считать, что барочная живопись — это только пышность и украшения. Рембрандт показал, что барокко может быть интимным и человечным",
+                        "Ошибка: путать барокко с Возрождением. Барочная живопись более драматична и эмоциональна"
+                    ]
+                }
+            },
+            {
+                id: 4,
+                title: "Язык музыки барокко",
+                shortDesc: "Украшения и секвенции",
+                content: {
+                    definition: "Музыка барокко имеет два главных «знака»: музыкальные украшения (мелизмы) и диатоническая секвенция. Они делают музыку узнаваемой и характерной для эпохи.",
+                    examples: [
+                        "Знак 1: Музыкальные украшения — трель, группетто, мордент. Их даже не записывали нотами, а обозначали специальными знаками. Они делают музыку похожей на богато украшенную шкатулку",
+                        "Пример украшений: медленная часть Сонаты №12 В.А. Моцарта, где в самом начале идут три группетто подряд — это стилизация барочной музыки",
+                        "Знак 2: Диатоническая секвенция из септаккордов кварто-квинтового соотношения. Звучит напряжённо и красочно. Пример: «Прелюдия и аллегро в стиле Пуньяни» Фрица Крейслера"
+                    ],
+                    errors: [
+                        "Ошибка: думать, что украшения в музыке — это что-то второстепенное. В барокко они были неотъемлемой частью",
+                        "Ошибка: путать трель, группетто и мордент. Это разные виды украшений",
+                        "Ошибка: считать секвенцию простым повтором. Это повтор мелодии на разной высоте, создающий напряжение"
+                    ]
+                }
+            },
+            {
+                id: 5,
+                title: "Антонио Вивальди (1678–1741)",
+                shortDesc: "«Рыжий поп» из Венеции",
+                content: {
+                    definition: "Антонио Вивальди — композитор, скрипач-виртуоз и преподаватель венецианской консерватории. Современники называли его «рыжим попом» из-за цвета волос и сана католического священника.",
+                    examples: [
+                        "Консерваториями тогда назывались приюты для сирот, где мальчиков обучали торговле, а девочек — музыке. Для оркестра своих учениц Вивальди написал большинство произведений",
+                        "Творческое наследие: 90 опер, 517 концертов, больше 100 сонат, оратории, светские и духовные кантаты",
+                        "Самое известное сочинение — цикл «Четыре времени года». В части «Лето» скрипка с оркестром изображает бурю: порывы ветра, сверкание молний, раскаты грома, потоки ливня"
+                    ],
+                    painting: {
+                        title: "Портрет Антонио Вивальди",
+                        author: "Гравюра эпохи барокко",
+                        description: "Портрет Антонио Вивальди — великого итальянского композитора и скрипача. На портрете он изображён в характерном для эпохи барокко парике с локонами, держит ноты и перо для записи музыки.",
+                        url: "painting6.jpg"
+                    },
+                    info: "Трагический финал: несмотря на популярность при жизни, Вивальди умер на чужбине, в нищете, и был похоронен на венском кладбище для бедняков. Через 50 лет та же судьба постигла Моцарта.",
+                    errors: [
+                        "Ошибка: думать, что Вивальди писал только «Времена года». Он создал более 500 концертов!",
+                        "Ошибка: считать «Времена года» абстрактной музыкой. Это программная музыка со звукоподражанием",
+                        "Ошибка: путать Вивальди с другими композиторами барокко. Он был именно скрипачом и преподавателем консерватории"
+                    ]
+                }
+            },
+            {
+                id: 6,
+                title: "Доменико Скарлатти (1685–1757)",
+                shortDesc: "Мастер клавесинной сонаты",
+                content: {
+                    definition: "Доменико Скарлатти — сын композитора Алессандро Скарлатти, композитор, органист и клавесинист. Родился в один год с И.С. Бахом и Г.Ф. Генделем.",
+                    examples: [
+                        "Соревновался в виртуозном мастерстве с Генделем при дворе римского кардинала. Был признан лучшим клавесинистом, но Гендель опередил его в органном мастерстве. Это не привело к ссоре — Скарлатти остался почитателем Генделя",
+                        "Написал 555 клавесинных сонат — в основном небольшие, одночастные, несложные по содержанию",
+                        "В его сонатах содержится множество открытий в области фортепианной техники и фактуры, многие из которых предвещают классицизм"
+                    ],
+                    painting: {
+                        title: "Портрет Доменико Скарлатти",
+                        author: "Портрет эпохи барокко",
+                        description: "Портрет Доменико Скарлатти — великого итальянского композитора и клавесиниста. На портрете он изображён в характерном парике эпохи барокко, держит ноты, что символизирует его композиторскую деятельность.",
+                        url: "painting7.jpg"
+                    },
+                    errors: [
+                        "Ошибка: путать Доменико Скарлатти с его отцом Алессандро. Доменико превзошёл отца",
+                        "Ошибка: думать, что 555 сонат — это много для одного композитора. Для Скарлатти это было нормой",
+                        "Ошибка: считать сонаты Скарлатти примитивными. Они просты по содержанию, но новаторски по технике"
+                    ]
+                }
+            }
+        ];
+
+        const testQuestions = [
+            {
+                question: "Слово «барокко» произошло от португальского «perola barocca», что означает ________.",
+                answers: ["идеально круглую жемчужину", "жемчужину причудливой формы", "крупную и дорогую жемчужину"],
+                correct: 1,
+                hint: "Это слово означало нечто несовершенное, неправильной формы"
+            },
+            {
+                question: "Первая опера «Дафна» (1598) была сочинена ________ во Флоренции.",
+                answers: ["Клаудио Монтеверди", "Якопо Пери", "Джулио Каччини"],
+                correct: 1,
+                hint: "Этот композитор был членом флорентийской «камераты»"
+            },
+            {
+                question: "Картина «Святое семейство» (1645) принадлежит кисти ________.",
+                answers: ["Рубенса", "Рембрандта", "Веласкеса"],
+                correct: 1,
+                hint: "Это голландский мастер, известный приёмом светотени"
+            },
+            {
+                question: "Музыкальные украшения барокко — это трель, группетто и ________.",
+                answers: ["соната", "мордент", "фуга"],
+                correct: 1,
+                hint: "Это один из видов мелизмов, начинающийся с основной ноты"
+            },
+            {
+                question: "Вивальди преподавал в венецианской консерватории, которая была ________.",
+                answers: ["университетом для музыкантов", "приютом для сирот", "церковной школой"],
+                correct: 1,
+                hint: "Там обучали девочек-сирот музыке"
+            },
+            {
+                question: "Доменико Скарлатти написал ________ клавесинных сонат.",
+                answers: ["55", "555", "5555"],
+                correct: 1,
+                hint: "Это очень большое число — больше пятисот"
+            }
+        ];
+
+        let visitedElements = new Set();
+        let timerInterval;
+        let seconds = 0;
+
+        function init() {
+            renderElements();
+            updateProgress();
+        }
+
+        function renderElements() {
+            const grid = document.getElementById('elements-grid');
+            grid.innerHTML = '';
+            
+            elements.forEach(el => {
+                const btn = document.createElement('div');
+                btn.className = 'element-btn';
+                btn.id = `element-${el.id}`;
+                btn.innerHTML = `
+                    <h3>${el.title}</h3>
+                    <p>${el.shortDesc}</p>
+                `;
+                btn.onclick = () => openCard(el);
+                grid.appendChild(btn);
+            });
+        }
+
+        function openCard(element) {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modal-content');
+            
+            let infoHtml = '';
+            if (element.content.info) {
+                infoHtml = `
+                    <h3>Важно понять</h3>
+                    <div class="info-box">${element.content.info}</div>
+                `;
+            }
+
+            let paintingHtml = '';
+            if (element.content.painting) {
+                const p = element.content.painting;
+                paintingHtml = `
+                    <div class="painting-frame">
+                        <div class="painting-inner">
+                            <img class="painting-img" src="${p.url}" alt="${p.title}" 
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="painting-fallback" style="display:none;">
+                                <div class="painting-fallback-title">${p.title}</div>
+                                <div class="painting-fallback-author">${p.author}</div>
+                                <div class="painting-fallback-desc">${p.description}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="painting-caption">${p.title} — ${p.author}</div>
+                `;
+            }
+            
+            content.innerHTML = `
+                <h2>${element.title}</h2>
+                ${paintingHtml}
+                <h3>Что это такое?</h3>
+                <p>${element.content.definition}</p>
+                
+                <h3>Примеры</h3>
+                ${element.content.examples.map(ex => `
+                    <div class="example-box">${ex}</div>
+                `).join('')}
+                
+                ${infoHtml}
+                
+                <h3>Типичные ошибки</h3>
+                ${element.content.errors.map(err => `
+                    <div class="error-box">${err}</div>
+                `).join('')}
+                
+                <button class="close-btn" onclick="closeCard(${element.id})">Понял!</button>
+            `;
+            
+            modal.style.display = 'block';
+            visitedElements.add(element.id);
+            document.getElementById(`element-${element.id}`).classList.add('visited');
+            updateProgress();
+        }
+
+        function closeCard(elementId) {
+            document.getElementById('modal').style.display = 'none';
+            checkTestAvailability();
+        }
+
+        function updateProgress() {
+            const progress = visitedElements.size;
+            const total = elements.length;
+            document.getElementById('progress-text').textContent = `${progress}/${total}`;
+            document.getElementById('progress-fill').style.width = `${(progress / total) * 100}%`;
+        }
+
+        function checkTestAvailability() {
+            const testBtn = document.getElementById('test-btn');
+            if (visitedElements.size === elements.length) {
+                testBtn.disabled = false;
+            }
+        }
+
+        document.getElementById('test-btn').onclick = function() {
+            document.getElementById('elements-grid').style.display = 'none';
+            document.querySelector('.test-btn-container').style.display = 'none';
+            document.querySelector('.progress-container').style.display = 'none';
+            document.getElementById('test-container').style.display = 'block';
+            document.getElementById('timer').style.display = 'block';
+            
+            startTimer();
+            renderTest();
+        };
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                document.getElementById('timer-value').textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function renderTest() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '<h2 style="font-family: Playfair Display; color: #5c3a21; margin-bottom: 35px; text-align: center; font-size: 2.4rem; border-bottom: 3px solid #c9a96e; padding-bottom: 15px; font-style: italic;">Тест по эпохе барокко</h2>';
+            
+            testQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">
+                        <strong>Вопрос ${index + 1}:</strong> ${q.question}
+                    </div>
+                    <div class="answers">
+                        ${q.answers.map((ans, ansIndex) => `
+                            <div class="answer-option" onclick="selectAnswer(${index}, ${ansIndex})">
+                                ${ans}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="hint-btn" onclick="showHint(${index})">Подсказка</button>
+                    <div class="hint-text" id="hint-${index}">${q.hint}</div>
+                `;
+                container.appendChild(questionDiv);
+            });
+            
+            const submitBtn = document.createElement('button');
+            submitBtn.className = 'submit-test-btn';
+            submitBtn.textContent = 'Проверить ответы';
+            submitBtn.onclick = checkAnswers;
+            container.appendChild(submitBtn);
+        }
+
+        function selectAnswer(questionIndex, answerIndex) {
+            const question = document.querySelectorAll('.question')[questionIndex];
+            const options = question.querySelectorAll('.answer-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[answerIndex].classList.add('selected');
+            options[answerIndex].dataset.selected = 'true';
+        }
+
+        function showHint(index) {
+            document.getElementById(`hint-${index}`).style.display = 'block';
+        }
+
+        function checkAnswers() {
+            clearInterval(timerInterval);
+            let correct = 0;
+            const total = testQuestions.length;
+            
+            testQuestions.forEach((q, index) => {
+                const question = document.querySelectorAll('.question')[index];
+                const options = question.querySelectorAll('.answer-option');
+                let selected = -1;
+                
+                options.forEach((opt, optIndex) => {
+                    if (opt.dataset.selected === 'true') {
+                        selected = optIndex;
+                    }
+                    opt.onclick = null;
+                });
+                
+                if (selected === q.correct) {
+                    correct++;
+                    options[selected].classList.add('correct');
+                } else {
+                    if (selected !== -1) {
+                        options[selected].classList.add('incorrect');
+                    }
+                    options[q.correct].classList.add('correct');
+                }
+            });
+            
+            setTimeout(() => showResults(correct, total), 1500);
+        }
+
+        function showResults(correct, total) {
+            document.getElementById('test-container').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+            
+            if (correct === total) {
+                results.className = 'results success';
+                results.innerHTML = `
+                    <h2>Отлично!</h2>
+                    <p>Ты настоящий знаток эпохи барокко!</p>
+                    <p>Правильных ответов: ${correct} из ${total}</p>
+                    <button class="restart-btn" onclick="restart()">Вернуться к карточкам</button>
+                `;
+                createConfetti();
+            } else {
+                results.className = 'results failure';
+                results.innerHTML = `
+                    <h2>Почти получилось!</h2>
+                    <p>Перечитай карточки и попробуй снова!</p>
+                    <p>Правильных ответов: ${correct} из ${total}</p>
+                    <button class="restart-btn" onclick="restart()">Вернуться к карточкам</button>
+                    <button class="restart-btn" onclick="retakeTest()">Пройти тест снова</button>
+                `;
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#c9a96e', '#a07840', '#6b8e23', '#cd853f', '#8b7355'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 30);
+            }
+        }
+
+        function restart() {
+            visitedElements.clear();
+            seconds = 0;
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('elements-grid').style.display = 'grid';
+            document.querySelector('.test-btn-container').style.display = 'block';
+            document.querySelector('.progress-container').style.display = 'block';
+            document.getElementById('test-btn').disabled = true;
+            renderElements();
+            updateProgress();
+        }
+
+        function retakeTest() {
+            seconds = 0;
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('test-container').style.display = 'block';
+            document.getElementById('timer').style.display = 'block';
+            startTimer();
+            renderTest();
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
